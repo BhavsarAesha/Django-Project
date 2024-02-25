@@ -1,0 +1,89 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Contact Us{% endblock title %}
+{% block main-content %}
+<style>
+  form { max-width:420px; }
+
+.feedback-input {
+  color:black;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight:500;
+  font-size: 18px;
+  border-radius: 5px;
+  line-height: px;
+  background-color: transparent;
+  border:2px solid #CC6666;
+  transition: all 0.3s;
+  padding: 13px;
+  margin-bottom: 15px;
+  width:100%;
+  box-sizing: border-box;
+  outline:0;
+}
+
+.feedback-input:focus { border:2px solid #CC4949; }
+
+textarea {
+  height: 150px;
+  line-height: 150%;
+  resize:vertical;
+}
+
+[type="submit"] {
+  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  width: 100%;
+  background:#CC6666;
+  border-radius:5px;
+  border:0;
+  cursor:pointer;
+  color:white;
+  font-size:24px;
+  padding-top:10px;
+  padding-bottom:10px;
+  transition: all 0.3s;
+  margin-top:-4px;
+  font-weight:700;
+}
+[type="submit"]:hover { background:#CC4949; }
+</style>
+<center>
+<form action="" method="post" style="border: 25px;">
+  {% csrf_token %}
+  <!-- <input type="hidden" name="csrfmiddlewaretoken" value="yTF5g7ceTgkwsOimKxZpuV10DG4a1TWFwQ60pneu047lPvu6kTAlNYPfYEC9G8jq"> -->
+  <tr>
+    <th>
+        <label for="id_name"></label>
+    </th>
+    <td>
+        <input type="text" name="name" maxlength="40" required id="id_name" class="feedback-input" placeholder="Enter your Name">
+    </td>
+</tr>
+<tr>
+  <tr>
+      <th>
+          <label for="id_email"></label>
+      </th>
+      <td>
+          <input type="email" name="email" maxlength="254" required id="id_email" class="feedback-input" placeholder="Enter your Email">
+      </td>
+  </tr>
+  <tr>
+      <th>
+          <label for="id_subject"></label>
+      </th>
+      <td>
+          <input type="text" name="subject" maxlength="255" required id="id_subject" class="feedback-input" placeholder="Enter Subject">
+      </td>
+  </tr>
+  <tr>
+      <th>
+          <label for="id_message"></label>
+      </th>
+      <td>
+          <textarea name="message" cols="40" rows="10" required id="id_message" class="feedback-input" placeholder="Enter your Message"></textarea>
+      </td>
+  </tr>
+  <input type="submit" value="Submit">
+</form></center>
+{% endblock main-content %}

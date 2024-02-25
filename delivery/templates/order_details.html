@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGKcAwihoVzZDn34BlV2uKzpDrmfFt-wM"></script>
+    <title>Order Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .order-info,  .bill-info {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-info p,  .bill-info p {
+            margin: 5px 0;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ELITE DELIVERY</h1>
+    </header>
+
+    <main>
+        <section id="order_details" class="order_details">
+            <h2>Order Details</h2>
+            <div class="order-info">
+                <p><strong>ID:</strong> {{ customer.id }}</p>
+                <p><strong>Name:</strong> {{ customer.name }}</p>
+                <p><strong>Delivery Address:</strong> {{ customer.locality }}, {{ customer.city }}, {{ customer.zipcode }}</p>
+            </div>
+            <div id="map"></div>
+            <br>
+            <div class="bill-info">
+                <p><strong>Total Amount:</strong> {{ order.total_amount }}1750</p>
+                <p><strong>Payment Status:</strong> {{ order.payment_status }}Paid </p>
+            </div>
+            <button style="background-color: rgb(87, 183, 89);color: #fff;padding: 10px 20px;font-weight: bold;border: none;border-radius: 5px;cursor: pointer;transition: background-color 0.3s ease-in-out;" onclick="markDelivered()" >Mark as Delivered</button>
+        </section>
+
+        <script>
+            // JavaScript code to display the map
+            function initMap() {
+                // Get the delivery address from Django template
+                var address = "{{ customer.locality }}, {{ customer.city }}, {{ customer.zipcode }}";
+    
+                // Create a Geocoder instance
+                var geocoder = new google.maps.Geocoder();
+    
+                // Get latitude and longitude for the address
+                geocoder.geocode({ 'address': address }, function(results, status) {
+                    if (status === 'OK') {dkk
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            center: results[0].geometry.location,
+                            zoom: 12
+                        });
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location
+                        });
+                    } else {
+                        alert('Geocode was not successful for the following reason: ' + status);
+                    }
+                });
+            }
+        </script>
+        <script>
+            // Call the initMap function when the page loads
+            initMap();
+        </script>
+
+<script>
+    function markDelivered() {
+        // Make an AJAX request to Django backend to remove entry from the database
+        var orderId = "{{ customer.id }}"; // Assuming you have an order ID to identify the entry
+
+        // Send a POST request to your Django view using Fetch API or XMLHttpRequest
+        fetch(`/mark_as_delivered/${orderId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}' // Ensure you have CSRF token included
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Entry removed successfully, update UI or perform any necessary actions
+                alert('Delivered Successfully!');
+                window.location.href = '/order'; 
+            } else {
+                // Handle errors if needed
+                alert('Failed to mark as delivered.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while processing the request.');
+        });
+    }
+</script>
+
+    </main>
+
+    <footer>
+        &copy; 2023 ELITE DELIVERY
+    </footer>
+</body>
+</html>

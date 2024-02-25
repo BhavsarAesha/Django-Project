@@ -1,0 +1,69 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Checkout{% endblock title %}
+{% block main-content %}
+<div class="container">
+ <div class="row mt-5">
+  <div class="col-sm-6">
+    <h4>Order Summary</h4>
+    <hr>
+    {% for item in cart_items %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <h5>Product: {{item.product.title}}</h5>
+          <p>Quantity: {{item.quantity}}</p>
+          <p>Size: {{item.size}}</p>
+          <p class="fw-bold">Price: {{item.total_cost}}</p>
+        </div>
+      </div>
+      {% endfor %}
+      <p class="fw-bold">Total Cost + Rs. 70 = {{totalamount}}</p>
+    <small>Term and Condition: Sale of any Products or Services is expressly conditioned on Buyer’s assent to these Terms and Conditions. Any acceptance of Seller’s offer is expressly limited to acceptance of these Terms and Conditions and Seller expressly objects to any additional or different terms proposed by Buyer. No Buyer form shall modify these Terms and Conditions, nor shall any course of performance, course of dealing, or usage of trade operate as a modification or waiver of these Terms and Conditions.</small>
+  </div>
+  <div class="col-sm-4 offset-sm-1">
+    <h4>Select Shipping Address</h4>
+    <hr>
+    <form action="/paymentdone">
+      {% csrf_token %}
+      {% for ad in add %}
+      <div class="card">
+        <div class="card-body">
+        <h5>{{ad.name}}</h5>
+        <p>{{ad.locality}}, {{ad.city}}, {{ad.state}} - {{ad.zipcode}}</p>
+        </div>
+      </div>
+        <div class="form-check mt-2 mb-5">
+          <input class="form-check-input" type="radio" name="custid" id="custadd{{forloop.counter}}"  value="{{ad.id}}">
+          <label class="form-check-label fw-bold" for="custadd{{forloop.counter}}">
+            Address: {{forloop.counter}} </label>
+        </div>
+        {% endfor %}
+        <div class="form-check mt-2 mb-3">
+          <label class="form-label fw-bold" for="totalamount">Total Amount </label>
+          <input class="form-control" type="number" name="totalamount" value={{totalamount}} readonly>
+        </div>
+       
+        <div class="text-end">
+          
+          <button type="submit" class="btn btn-warning mt-3 px-5 fw-bold">View Order</button>
+          <!-- Set up a container element for the button
+           <div id="paypal-button-container"></div> -->
+           <!-- <button id="rzp-button1" type="submit" class="btn btn-warning mt-3 px-5 fw-bold">Payment</button> -->
+        </div>
+      </form>
+    </div>
+    
+    <div class="text-center">
+      <button  class="btn btn-warning">
+        <a href="{% url 'generate_pdf' %}" download style="text-decoration: none; color: black;">Download PDF</a>
+      </button>
+      <button  id="myButton" class="btn btn-warning" style="text-decoration: none;">
+        <a href="{% url 'payment' %}" style="text-decoration: none; color: black;" >Payment</a>
+      </button>
+      
+    </div>
+   
+  </div>
+</div>
+{% endblock main-content %}
+
